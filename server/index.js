@@ -4,12 +4,13 @@ const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
 app.use(cors());
+require("dotenv").config();
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://chatzy-chat-app.herokuapp.com/",
     methods: ["GET", "POST"],
   },
 });
@@ -31,6 +32,10 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3001, () => {
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static('../client/build'));
+}
+
+server.listen(process.env.PORT || 3001, () => {
   console.log("SERVER RUNNING");
 });
